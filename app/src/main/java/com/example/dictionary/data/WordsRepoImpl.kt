@@ -8,7 +8,6 @@ class WordsRepoImpl:OnWordsEntity {
     private var cashWords = mutableListOf<WordsEntity>()
 
     override fun createWord(word: WordsEntity) {
-
         cashWords.add(word)
     }
 

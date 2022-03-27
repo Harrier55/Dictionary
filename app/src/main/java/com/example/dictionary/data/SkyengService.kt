@@ -11,6 +11,6 @@ private const val BASEURL: String = "https://dictionary.skyeng.ru/api/public/v1/
 /**  https://dictionary.skyeng.ru/api/public/v1/words/search?search=space&page=1&pageSize=1 */
 
 interface SkyengService {
-    @GET("search?search=space")
-    fun getListTranslatedWords(): Call<List<Skyeng_Base>>
+    @GET("search?search=space&page=1")
+    fun getListTranslatedWords(): Call<MutableList<Skyeng_Base>>
 }
