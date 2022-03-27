@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dictionary.R
-import com.example.dictionary.domain.words.Words
+import com.example.dictionary.domain.words.WordsEntity
 
 class MainActivityAdapter:RecyclerView.Adapter<MainActivityAdapter.MainActivityViewHolder>() {
-    private var listWords = listOf<Words>()
+    private var listWords = listOf<WordsEntity>()
 
     fun refreshList(){
  //       this.listWords = newListWords
@@ -24,8 +24,8 @@ class MainActivityAdapter:RecyclerView.Adapter<MainActivityAdapter.MainActivityV
     }
 
     override fun onBindViewHolder(holder: MainActivityViewHolder, position: Int) {
-//        holder.translation.text = " Перевод"
-//        holder.transcription.text = "transcription"
+//        holder.translation.text = listWords[position].translationText
+//        holder.transcription.text = listWords[position].transcription
     }
 
     class MainActivityViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){

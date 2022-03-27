@@ -25,21 +25,21 @@
             android:layout_weight="1">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textInputLayout"
+                android:id="@+id/text_input_te"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="Ввести слово"
                 android:inputType="text" />
-
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
+            android:id="@+id/search_button"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:src="@drawable/ic_baseline_search_24"
-
+            android:backgroundTint="@color/teal_200"
+            android:clickable="true"
             />
 
     </LinearLayout>
