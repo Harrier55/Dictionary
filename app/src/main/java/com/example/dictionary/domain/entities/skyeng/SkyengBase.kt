@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 
 
-data class Skyeng_Base (
+data class SkyengBase (
 
 	@SerializedName("id") val id : Int,
 	@SerializedName("text") val text : String,
