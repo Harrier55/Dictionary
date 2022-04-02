@@ -3,6 +3,7 @@ package com.example.dictionary.ui
 import android.app.ProgressDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dictionary.App
@@ -43,6 +44,11 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
 //        myAdapter.refreshList()
     }
 
+    override fun showListTranslated(wordsList: List<WordsEntity>) {
+        myAdapter.refreshList(wordsList)
+        Log.d("@@@", " showListTranslated: OK$wordsList")
+    }
+
     private fun showProgressDialog() {
         progressDialog.setTitle("Load data")
         progressDialog.setMessage("... please wait")
@@ -53,9 +59,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
         progressDialog.dismiss()
     }
 
-    override fun showListTranslated(wordsList: List<WordsEntity>) {
-        myAdapter.refreshList() // todo надо допилить метод в адаптере
-    }
+
 
     override fun showError() {
         TODO("Not yet implemented")

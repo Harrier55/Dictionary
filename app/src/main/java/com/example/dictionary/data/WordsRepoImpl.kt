@@ -6,6 +6,7 @@ import com.example.dictionary.data.retrofitApi.RetrofitService
 import com.example.dictionary.domain.entities.skyeng.SkyengBase
 import com.example.dictionary.domain.words.OnWordsEntity
 import com.example.dictionary.domain.words.WordsEntity
+import com.example.dictionary.ui.MainActivityPresenter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -15,6 +16,7 @@ import javax.inject.Inject
 
 class WordsRepoImpl : OnWordsEntity {
     private var cashWords = mutableListOf<WordsEntity>()
+    private val presenter by lazy { MainActivityPresenter() }
 
     init {
         App.instance.appComponent.injectWordRepoImpl(this)
@@ -47,6 +49,7 @@ class WordsRepoImpl : OnWordsEntity {
                 onSuccess = {
                     Log.d("@@@", "myRxRetrofit: $it")
                     convertForRepository(it)
+                    Log.d("@@@", "myRxRetrofit: stop")
                 }
             )
 
@@ -61,8 +64,13 @@ class WordsRepoImpl : OnWordsEntity {
                         it.transcription
                     )
                 )
-                Log.d("@@@", "convertForRepository:")
+
             }
         }
+        Log.d("@@@", "convertForRepository: stop"  )
+        presenter.loadData(cashWords)
     }
+
+
+
 }

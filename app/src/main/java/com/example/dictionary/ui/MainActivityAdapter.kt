@@ -1,5 +1,7 @@
 package com.example.dictionary.ui
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +13,14 @@ import com.example.dictionary.domain.words.WordsEntity
 class MainActivityAdapter:RecyclerView.Adapter<MainActivityAdapter.MainActivityViewHolder>() {
     private var listWords = listOf<WordsEntity>()
 
-    fun refreshList(){
- //       this.listWords = newListWords
+    @SuppressLint("NotifyDataSetChanged")
+    fun refreshList(list:List<WordsEntity>){
+        this.listWords = list
+        Log.d("@@@", "refreshList: Adapter = $listWords")
         notifyDataSetChanged()
     }
 
-    override fun getItemCount(): Int = 10
+    override fun getItemCount(): Int = 15
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainActivityViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_translate_word,parent,false)
@@ -24,8 +28,11 @@ class MainActivityAdapter:RecyclerView.Adapter<MainActivityAdapter.MainActivityV
     }
 
     override fun onBindViewHolder(holder: MainActivityViewHolder, position: Int) {
-//        holder.translation.text = listWords[position].translationText
-//        holder.transcription.text = listWords[position].transcription
+        if(listWords.isNotEmpty()) {
+        holder.translation.text = listWords[position].translationText
+        holder.transcription.text = listWords[position].transcription
+        }
+
     }
 
     class MainActivityViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
