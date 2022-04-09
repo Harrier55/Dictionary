@@ -7,8 +7,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dictionary.App
+import com.example.dictionary.data.WordsRepoImpl
 import com.example.dictionary.databinding.ActivityMainBinding
 import com.example.dictionary.domain.words.WordsEntity
+import javax.inject.Inject
+
+private const val TAG = "@@@"
 
 class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView {
 
@@ -17,52 +21,53 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
 
     private val myAdapter by lazy { MainActivityAdapter() }
     private val progressDialog by lazy { ProgressDialog(this) }
-    private var presenter: MainActivityContract.MainActivityPresenter = MainActivityPresenter()
+    private var presenter: MainActivityContract.MainActivityPresenter = MainActivityPresenter(this)
+
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
- 
+
         presenter.attachView(this)
 
         initRecyclerView()
 
-
         binding.searchButton.setOnClickListener {
             val text = binding.textInputTe.text
-            presenter.getListWordTranslated(binding.textInputTe.text.toString())
+            presenter.requestTranslated(binding.textInputTe.text.toString())
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
         }
-
     }
+
+
 
     private fun initRecyclerView() {
         binding.recycler.layoutManager = LinearLayoutManager(this)
         binding.recycler.adapter = myAdapter
-//        myAdapter.refreshList()
     }
 
-    override fun showListTranslated(wordsList: List<WordsEntity>) {
-        myAdapter.refreshList(wordsList)
-        Log.d("@@@", " showListTranslated: OK$wordsList")
+    override fun showListWordsTranslated(list: List<WordsEntity>) {
+        myAdapter.refreshList(list)
+        Log.d(TAG, "showListTranslated: ")
     }
 
-    private fun showProgressDialog() {
+     fun showProgressDialog() {
         progressDialog.setTitle("Load data")
         progressDialog.setMessage("... please wait")
         progressDialog.show()
     }
 
-    private fun dismissProgressDialog() {
+     fun dismissProgressDialog() {
         progressDialog.dismiss()
     }
 
 
-
     override fun showError() {
-        TODO("Not yet implemented")
+
     }
 
     override fun startShowProgressLoading() {
@@ -76,5 +81,8 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()
+
     }
+
+
 }

@@ -6,7 +6,7 @@ import com.example.dictionary.domain.words.WordsEntity
 class MainActivityContract {
 
     interface MainActivityView{
-        fun showListTranslated(wordsList:List<WordsEntity> )
+        fun showListWordsTranslated(list:List<WordsEntity>)
         fun showError()
         fun startShowProgressLoading()
         fun stopShowProgressLoading()
@@ -16,8 +16,8 @@ class MainActivityContract {
     interface MainActivityPresenter{
         fun attachView(view: MainActivityView)
         fun detachView()
-        fun getListWordTranslated(searchWord: String)
-
+        fun requestTranslated(searchWord: String)
+        fun loadDataFromRepo()
     }
 
 }

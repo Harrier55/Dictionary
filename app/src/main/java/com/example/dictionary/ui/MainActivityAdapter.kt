@@ -16,11 +16,10 @@ class MainActivityAdapter:RecyclerView.Adapter<MainActivityAdapter.MainActivityV
     @SuppressLint("NotifyDataSetChanged")
     fun refreshList(list:List<WordsEntity>){
         this.listWords = list
-        Log.d("@@@", "refreshList: Adapter = $listWords")
         notifyDataSetChanged()
     }
 
-    override fun getItemCount(): Int = 15
+    override fun getItemCount(): Int = listWords.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainActivityViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_translate_word,parent,false)
