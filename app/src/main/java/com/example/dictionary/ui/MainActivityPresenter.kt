@@ -1,10 +1,9 @@
 package com.example.dictionary.ui
 
-import android.util.Log
 import com.example.dictionary.App
-import com.example.dictionary.data.OnCallbackWebRequest
+import com.example.dictionary.datasource.OnCallbackWebRequest
 import com.example.dictionary.data.WordsRepoImpl
-import com.example.dictionary.datasource.RetrofitWebConnection
+import com.example.dictionary.datasource.WebConnection
 import com.example.dictionary.domain.entities.skyeng.SkyengBase
 import com.example.dictionary.domain.words.WordsEntity
 import javax.inject.Inject
@@ -46,13 +45,14 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     }
 
     private fun loadDataFromWeb() {
-        RetrofitWebConnection(onCallbackWebRequest).webRequest()
+        WebConnection(onCallbackWebRequest).webRequest()
     }
 
     private val onCallbackWebRequest = object : OnCallbackWebRequest {
         override fun onResponse(body: List<SkyengBase>?) {
             if (body != null) {
-                convertForRepository(body)
+                convertDataToRepository(body)
+                loadDataFromRepo()
             }
         }
 
@@ -62,9 +62,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     }
 
     override fun loadDataFromRepo() {
-
         val list = wordsRepoImpl.getListWordsFromRepo()
-        Log.d(TAG, "loadDataFromRepo: $list")
         mainActivity.showListWordsTranslated(list)
         mainActivity.dismissProgressDialog()
 
@@ -78,7 +76,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
 //        )
     }
 
-    private fun convertForRepository(listSkyEng: List<SkyengBase>) {
+    private fun convertDataToRepository(listSkyEng: List<SkyengBase>) {
         listSkyEng.forEach { it ->
             it.meanings.forEach {
                 wordsRepoImpl.createWord(
@@ -89,8 +87,6 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
                 )
             }
         }
-
-        loadDataFromRepo()
     }
 
 

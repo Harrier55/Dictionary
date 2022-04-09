@@ -23,10 +23,6 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
     private val progressDialog by lazy { ProgressDialog(this) }
     private var presenter: MainActivityContract.MainActivityPresenter = MainActivityPresenter(this)
 
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
