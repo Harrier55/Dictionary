@@ -16,7 +16,7 @@ class MainActivityContract {
     interface MainActivityPresenter{
         fun attachView(view: MainActivityView)
         fun detachView()
-        fun requestTranslated(searchWord: String)
+        fun requestWordTranslation(searchWord: String)
         fun loadDataFromRepo()
     }
 

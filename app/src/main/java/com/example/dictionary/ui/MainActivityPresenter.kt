@@ -6,6 +6,9 @@ import com.example.dictionary.data.WordsRepoImpl
 import com.example.dictionary.datasource.WebConnection
 import com.example.dictionary.domain.entities.skyeng.SkyengBase
 import com.example.dictionary.domain.words.WordsEntity
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 private const val TAG = "@@@"
@@ -16,7 +19,8 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     private var view: MainActivityContract.MainActivityView? = null
 
 
-    @Inject lateinit var wordsRepoImpl: WordsRepoImpl
+    @Inject
+    lateinit var wordsRepoImpl: WordsRepoImpl
 
     init {
         App.instance.appComponent.injectMainActivityPresenter(this)
@@ -38,15 +42,36 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
         this.view = null
     }
 
-    override fun requestTranslated(searchWord: String) {
-//        mainActivity.showListTranslated(mockList)   // тест проверки для связи
-        loadDataFromWeb()
-        mainActivity.showProgressDialog()
+    override fun requestWordTranslation(searchWord: String) {
+        mainActivity.startShowProgressLoading()
+        /**тест проверки для связи c с адаптером*/
+//        mainActivity.showListTranslated(mockList)
+        /** Обычный запрос через callback**/
+//        WebConnection(onCallbackWebRequest).webRequest()
+
+
+        /**Rx запрос*/
+        wordsRepoImpl.requestToWeb()
+            .  subscribeOn(Schedulers.io())
+            . observeOn(AndroidSchedulers.mainThread())
+            .doOnNext {
+                if (it != null) {
+                  convertDataToRepository(it)
+                    val list = wordsRepoImpl.getListWordsFromRepo()
+                    mainActivity.showListWordsTranslated(list)
+                    mainActivity.stopShowProgressLoading()
+                }
+            }
+            .doOnError {
+
+            }
+            .doOnComplete {
+
+            }
+            .subscribe()
     }
 
-    private fun loadDataFromWeb() {
-        WebConnection(onCallbackWebRequest).webRequest()
-    }
+
 
     private val onCallbackWebRequest = object : OnCallbackWebRequest {
         override fun onResponse(body: List<SkyengBase>?) {
@@ -64,16 +89,19 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     override fun loadDataFromRepo() {
         val list = wordsRepoImpl.getListWordsFromRepo()
         mainActivity.showListWordsTranslated(list)
-        mainActivity.dismissProgressDialog()
+        mainActivity.stopShowProgressLoading()
 
-
+/** Rx **/
 //        wordsRepoImpl.dataList
 //            .subscribeOn(Schedulers.io())
 //            .observeOn(AndroidSchedulers.mainThread())
 //            .subscribeBy(
-//                onSuccess = {mainActivity.showListTranslated(it)},
-//                onError = {it.localizedMessage}
-//        )
+//                onSuccess = {
+//                    mainActivity.showListWordsTranslated(it)
+//                    mainActivity.dismissProgressDialog()
+//                },
+//                onError = { it.localizedMessage }
+//            )
     }
 
     private fun convertDataToRepository(listSkyEng: List<SkyengBase>) {

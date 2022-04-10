@@ -1,16 +1,11 @@
 package com.example.dictionary.ui
 
 import android.app.ProgressDialog
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.dictionary.App
-import com.example.dictionary.data.WordsRepoImpl
 import com.example.dictionary.databinding.ActivityMainBinding
 import com.example.dictionary.domain.words.WordsEntity
-import javax.inject.Inject
 
 private const val TAG = "@@@"
 
@@ -33,13 +28,10 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
         initRecyclerView()
 
         binding.searchButton.setOnClickListener {
-            val text = binding.textInputTe.text
-            presenter.requestTranslated(binding.textInputTe.text.toString())
-            Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+            val text = binding.textInputTe.text.toString()
+            presenter.requestWordTranslation(text)
         }
     }
-
-
 
     private fun initRecyclerView() {
         binding.recycler.layoutManager = LinearLayoutManager(this)
@@ -48,30 +40,20 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
 
     override fun showListWordsTranslated(list: List<WordsEntity>) {
         myAdapter.refreshList(list)
-        Log.d(TAG, "showListTranslated: ")
     }
-
-     fun showProgressDialog() {
-        progressDialog.setTitle("Load data")
-        progressDialog.setMessage("... please wait")
-        progressDialog.show()
-    }
-
-     fun dismissProgressDialog() {
-        progressDialog.dismiss()
-    }
-
 
     override fun showError() {
 
     }
 
     override fun startShowProgressLoading() {
-        showProgressDialog()
+        progressDialog.setTitle("Load data")
+        progressDialog.setMessage("... please wait")
+        progressDialog.show()
     }
 
     override fun stopShowProgressLoading() {
-        dismissProgressDialog()
+        progressDialog.dismiss()
     }
 
     override fun onDestroy() {

@@ -12,4 +12,5 @@ import javax.inject.Singleton
 interface AppComponent {
     fun injectMainActivityPresenter(mainActivityPresenter: MainActivityPresenter)
     fun injectWebConnection(webConnection: WebConnection)
+    fun injectWordRepoImpl(wordsRepoImpl: WordsRepoImpl)
 }
