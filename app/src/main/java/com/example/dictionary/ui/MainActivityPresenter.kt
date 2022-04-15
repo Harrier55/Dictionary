@@ -1,14 +1,18 @@
 package com.example.dictionary.ui
 
+import android.util.Log
+import android.widget.Toast
 import com.example.dictionary.App
 import com.example.dictionary.datasource.OnCallbackWebRequest
 import com.example.dictionary.data.WordsRepoImpl
-import com.example.dictionary.datasource.WebConnection
 import com.example.dictionary.domain.entities.skyeng.SkyengBase
 import com.example.dictionary.domain.words.WordsEntity
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableSource
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.io.IOException
 import javax.inject.Inject
 
 private const val TAG = "@@@"
@@ -17,7 +21,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     MainActivityContract.MainActivityPresenter {
 
     private var view: MainActivityContract.MainActivityView? = null
-
+    private var disposable:Disposable?=null
 
     @Inject
     lateinit var wordsRepoImpl: WordsRepoImpl
@@ -40,37 +44,55 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
 
     override fun detachView() {
         this.view = null
+        disposable?.dispose()
     }
 
     override fun requestWordTranslation(searchWord: String) {
         mainActivity.startShowProgressLoading()
         /**тест проверки для связи c с адаптером*/
 //        mainActivity.showListTranslated(mockList)
-        /** Обычный запрос через callback**/
+        /** Обычный запрос через callback: OnCallbackWebRequest  **/
 //        WebConnection(onCallbackWebRequest).webRequest()
-
-
         /**Rx запрос*/
-        wordsRepoImpl.requestToWeb()
-            .  subscribeOn(Schedulers.io())
-            . observeOn(AndroidSchedulers.mainThread())
+        disposable = wordsRepoImpl.requestRxToWeb()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
-                if (it != null) {
-                  convertDataToRepository(it)
-                    val list = wordsRepoImpl.getListWordsFromRepo()
-                    mainActivity.showListWordsTranslated(list)
+                try {
+                    if (it != null) {
+                        convertDataToRepository(it)
+                        val list = wordsRepoImpl.getListWordsFromRepo()
+                        mainActivity.showListWordsTranslated(list)
+                        mainActivity.stopShowProgressLoading()
+                    }
+                } catch (e: Exception) {
+                    Log.d(TAG, "requestWordTranslation: ${e.message.toString()}")
+                }
+
+            }
+            .onErrorResumeNext {
+                Log.d(TAG,"requestWordTranslation: " +it.localizedMessage)
+                return@onErrorResumeNext ObservableSource {
                     mainActivity.stopShowProgressLoading()
                 }
             }
             .doOnError {
+                Log.d(TAG, "requestWordTranslation: doOnError ${it.localizedMessage}")
 
+                /** здесь есть проблема - при любой ошибке приложение падало, **/
+                /** пока не внедрил метод   onErrorResumeNext**/
             }
             .doOnComplete {
-
+                mainActivity.stopShowProgressLoading()
             }
             .subscribe()
-    }
 
+
+        /** новый тест */
+//        wordsRepoImpl.fooRx()
+
+
+    }
 
 
     private val onCallbackWebRequest = object : OnCallbackWebRequest {
@@ -91,7 +113,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
         mainActivity.showListWordsTranslated(list)
         mainActivity.stopShowProgressLoading()
 
-/** Rx **/
+        /** Rx получение списка из репозитория  **/
 //        wordsRepoImpl.dataList
 //            .subscribeOn(Schedulers.io())
 //            .observeOn(AndroidSchedulers.mainThread())
