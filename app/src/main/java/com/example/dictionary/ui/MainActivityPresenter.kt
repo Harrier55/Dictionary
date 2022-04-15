@@ -3,6 +3,7 @@ package com.example.dictionary.ui
 import android.util.Log
 import android.widget.Toast
 import com.example.dictionary.App
+import com.example.dictionary.data.Error
 import com.example.dictionary.datasource.OnCallbackWebRequest
 import com.example.dictionary.data.WordsRepoImpl
 import com.example.dictionary.domain.entities.skyeng.SkyengBase
@@ -13,6 +14,7 @@ import io.reactivex.rxjava3.core.ObservableSource
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.IOException
+import java.net.HttpRetryException
 import javax.inject.Inject
 
 private const val TAG = "@@@"
@@ -21,10 +23,12 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     MainActivityContract.MainActivityPresenter {
 
     private var view: MainActivityContract.MainActivityView? = null
-    private var disposable:Disposable?=null
+    private var disposable: Disposable? = null
 
     @Inject
     lateinit var wordsRepoImpl: WordsRepoImpl
+    @Inject
+    lateinit var myErrorClass: Error
 
     init {
         App.instance.appComponent.injectMainActivityPresenter(this)
@@ -65,33 +69,29 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
                         mainActivity.showListWordsTranslated(list)
                         mainActivity.stopShowProgressLoading()
                     }
-                } catch (e: Exception) {
+                } catch (e: HttpRetryException) {
                     Log.d(TAG, "requestWordTranslation: ${e.message.toString()}")
                 }
 
             }
             .onErrorResumeNext {
-                Log.d(TAG,"requestWordTranslation: " +it.localizedMessage)
+                Log.d(TAG, "requestWordTranslation: " + it.localizedMessage)
+                myErrorClass.error = it
                 return@onErrorResumeNext ObservableSource {
                     mainActivity.stopShowProgressLoading()
+                    mainActivity.showError(myErrorClass)
                 }
             }
             .doOnError {
                 Log.d(TAG, "requestWordTranslation: doOnError ${it.localizedMessage}")
 
-                /** здесь есть проблема - при любой ошибке приложение падало, **/
+                /** здесь была проблема - при любой ошибке приложение падало, **/
                 /** пока не внедрил метод   onErrorResumeNext**/
             }
             .doOnComplete {
                 mainActivity.stopShowProgressLoading()
             }
             .subscribe()
-
-
-        /** новый тест */
-//        wordsRepoImpl.fooRx()
-
-
     }
 
 
@@ -113,7 +113,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
         mainActivity.showListWordsTranslated(list)
         mainActivity.stopShowProgressLoading()
 
-        /** Rx получение списка из репозитория  **/
+        /**  получение списка из репозитория через Rx **/
 //        wordsRepoImpl.dataList
 //            .subscribeOn(Schedulers.io())
 //            .observeOn(AndroidSchedulers.mainThread())

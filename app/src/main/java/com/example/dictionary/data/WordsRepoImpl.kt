@@ -26,6 +26,7 @@ class WordsRepoImpl() : WordsEntityUseCase {
     @Inject
     lateinit var retrofit: Retrofit
 
+
     init {
         App.instance.appComponent.injectWordRepoImpl(this)
     }
@@ -71,21 +72,4 @@ class WordsRepoImpl() : WordsEntityUseCase {
     }
 
 
-    fun fooRx(){
-        val retrofit = retrofit.create(RetrofitService::class.java)
-        retrofit.getListTranslatedWordsRx()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeBy (
-                onError = {
-                    Log.d(TAG, "fooRx: ${it.localizedMessage}")
-                },
-                onNext = {
-                    Log.d(TAG, "fooRx: $it")
-                },
-                onComplete = {
-                }
-
-                    )
-    }
 }

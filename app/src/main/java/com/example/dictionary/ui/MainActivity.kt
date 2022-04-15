@@ -1,9 +1,13 @@
 package com.example.dictionary.ui
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dictionary.R
+import com.example.dictionary.data.Error
 import com.example.dictionary.databinding.ActivityMainBinding
 import com.example.dictionary.domain.words.WordsEntity
 
@@ -17,6 +21,7 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
     private val myAdapter by lazy { MainActivityAdapter() }
     private val progressDialog by lazy { ProgressDialog(this) }
     private var presenter: MainActivityContract.MainActivityPresenter = MainActivityPresenter(this)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +47,12 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
         myAdapter.refreshList(list)
     }
 
-    override fun showError() {
-
+    override fun showError(myError: Error) {
+         AlertDialog.Builder(this)
+            .setTitle(getString(R.string.error_title))
+            .setMessage(getString(R.string.error_message))
+            .setMessage(myError.error?.message )
+            .show()
     }
 
     override fun startShowProgressLoading() {

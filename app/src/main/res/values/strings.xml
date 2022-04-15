@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Dictionary</string>
+    <string name="error_title">Произошла ошибка</string>
+    <string name="error_message">проверьте подключение к интернету</string>
 </resources>
