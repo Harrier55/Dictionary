@@ -6,22 +6,51 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <TextView
-        android:id="@+id/translation_tv"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:layout_margin="8dp"
-        android:textSize="18sp"
-        android:text="Перевод слова"
-        />
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textSize="16sp"
+            android:text="@string/word_translate"
+            />
 
-    <TextView
-        android:id="@+id/transcription_tv"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/translation_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_margin="8dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="@string/word_translate"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textSize="14sp"
-        android:text="Транскрипция" />
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="14sp"
+            android:text="@string/word_transcription"/>
+        <TextView
+            android:id="@+id/transcription_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:text="@string/word_transcription"/>
+
+    </LinearLayout>
 
 </LinearLayout>

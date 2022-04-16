@@ -2,4 +2,7 @@
     <string name="app_name">Dictionary</string>
     <string name="error_title">Произошла ошибка</string>
     <string name="error_message">проверьте подключение к интернету</string>
+    <string name="word_translate">Перевод слова :</string>
+    <string name="word_transcription">Транскрипция</string>
+
 </resources>

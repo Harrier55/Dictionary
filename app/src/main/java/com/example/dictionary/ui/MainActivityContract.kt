@@ -9,8 +9,7 @@ class MainActivityContract {
     interface MainActivityView{
         fun showListWordsTranslated(list:List<WordsEntity>)
         fun showError(myError:Error)
-        fun startShowProgressLoading()
-        fun stopShowProgressLoading()
+        fun showProgressLoading(state:Boolean)
 
     }
 

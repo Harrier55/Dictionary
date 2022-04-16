@@ -48,21 +48,24 @@ class MainActivity : AppCompatActivity(), MainActivityContract.MainActivityView 
     }
 
     override fun showError(myError: Error) {
-         AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
             .setTitle(getString(R.string.error_title))
             .setMessage(getString(R.string.error_message))
-            .setMessage(myError.error?.message )
+            .setMessage(myError.error?.message)
             .show()
     }
 
-    override fun startShowProgressLoading() {
-        progressDialog.setTitle("Load data")
-        progressDialog.setMessage("... please wait")
-        progressDialog.show()
-    }
-
-    override fun stopShowProgressLoading() {
-        progressDialog.dismiss()
+    override fun showProgressLoading(state: Boolean) {
+        when (state) {
+            true -> {
+                progressDialog.setTitle("Load data")
+                progressDialog.setMessage("... please wait")
+                progressDialog.show()
+            }
+            false -> {
+                progressDialog.dismiss()
+            }
+        }
     }
 
     override fun onDestroy() {

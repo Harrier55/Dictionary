@@ -52,7 +52,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     }
 
     override fun requestWordTranslation(searchWord: String) {
-        mainActivity.startShowProgressLoading()
+        mainActivity.showProgressLoading(true)
         /**тест проверки для связи c с адаптером*/
 //        mainActivity.showListTranslated(mockList)
         /** Обычный запрос через callback: OnCallbackWebRequest  **/
@@ -67,7 +67,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
                         convertDataToRepository(it)
                         val list = wordsRepoImpl.getListWordsFromRepo()
                         mainActivity.showListWordsTranslated(list)
-                        mainActivity.stopShowProgressLoading()
+                        mainActivity.showProgressLoading(false)
                     }
                 } catch (e: HttpRetryException) {
                     Log.d(TAG, "requestWordTranslation: ${e.message.toString()}")
@@ -78,7 +78,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
                 Log.d(TAG, "requestWordTranslation: " + it.localizedMessage)
                 myErrorClass.error = it
                 return@onErrorResumeNext ObservableSource {
-                    mainActivity.stopShowProgressLoading()
+                    mainActivity.showProgressLoading(false)
                     mainActivity.showError(myErrorClass)
                 }
             }
@@ -89,7 +89,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
                 /** пока не внедрил метод   onErrorResumeNext**/
             }
             .doOnComplete {
-                mainActivity.stopShowProgressLoading()
+                mainActivity.showProgressLoading(false)
             }
             .subscribe()
     }
@@ -111,7 +111,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     override fun loadDataFromRepo() {
         val list = wordsRepoImpl.getListWordsFromRepo()
         mainActivity.showListWordsTranslated(list)
-        mainActivity.stopShowProgressLoading()
+        mainActivity.showProgressLoading(false)
 
         /**  получение списка из репозитория через Rx **/
 //        wordsRepoImpl.dataList
