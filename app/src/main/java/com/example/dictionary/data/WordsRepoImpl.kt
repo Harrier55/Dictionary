@@ -35,6 +35,10 @@ class WordsRepoImpl() : WordsEntityUseCase {
         cashWords.add(word)
     }
 
+    override fun clearRepo() {
+        cashWords.clear()
+    }
+
     override fun getListWordsFromRepo(): List<WordsEntity> {
         return cashWords
     }
@@ -46,9 +50,10 @@ class WordsRepoImpl() : WordsEntityUseCase {
     /** завернул запрос в Сеть в Observer
      * статья на Хабое Исследуем RxLava 2 для Андроид**/
 
-    override fun requestRxToWeb(): Observable<List<SkyengBase>> {
+    override fun requestRxToWeb(word:String): Observable<List<SkyengBase>> {
 
-        val call = retrofit.create(RetrofitService::class.java).getListTranslatedWords()
+        val call = retrofit.create(RetrofitService::class.java).getListTranslatedWords(word)
+        Log.d(TAG, "requestRxToWeb: $word")
 
         return Observable.create<List<SkyengBase>> {
 
@@ -59,6 +64,7 @@ class WordsRepoImpl() : WordsEntityUseCase {
                 ) {
                     if (response.isSuccessful && response.code() == 200) {
                         it.onNext(response.body())
+
                     }
                     it.onComplete()
                 }

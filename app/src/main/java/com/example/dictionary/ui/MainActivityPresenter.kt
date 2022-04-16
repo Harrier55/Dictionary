@@ -52,13 +52,14 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     }
 
     override fun requestWordTranslation(searchWord: String) {
+
         mainActivity.showProgressLoading(true)
         /**тест проверки для связи c с адаптером*/
 //        mainActivity.showListTranslated(mockList)
         /** Обычный запрос через callback: OnCallbackWebRequest  **/
 //        WebConnection(onCallbackWebRequest).webRequest()
         /**Rx запрос*/
-        disposable = wordsRepoImpl.requestRxToWeb()
+        disposable = wordsRepoImpl.requestRxToWeb(searchWord)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
@@ -127,6 +128,7 @@ class MainActivityPresenter(private val mainActivity: MainActivity) :
     }
 
     private fun convertDataToRepository(listSkyEng: List<SkyengBase>) {
+        wordsRepoImpl.clearRepo()
         listSkyEng.forEach { it ->
             it.meanings.forEach {
                 wordsRepoImpl.createWord(

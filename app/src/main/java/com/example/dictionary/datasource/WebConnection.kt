@@ -21,7 +21,7 @@ class WebConnection(private val onCallbackWebRequest: OnCallbackWebRequest) {
 
      fun webRequest(){
        val retrofitService = retrofit.create(RetrofitService::class.java)
-        retrofitService.getListTranslatedWords().enqueue(object :Callback<List<SkyengBase>>{
+        retrofitService.getListTranslatedWords(word = "cat").enqueue(object :Callback<List<SkyengBase>>{
             override fun onResponse(
                 call: Call<List<SkyengBase>>,
                 response: Response<List<SkyengBase>>
